@@ -1,0 +1,45 @@
+import * as THREE from "three";
+import { EventEmitter } from "events";
+import { SchematicRenderer } from "../SchematicRenderer";
+import { SchematicObject } from "./SchematicObject";
+export declare class SceneManager extends EventEmitter {
+    schematicRenderer: SchematicRenderer;
+    scene: THREE.Scene;
+    private gridHelper;
+    private axesHelper;
+    private _showGrid;
+    private _showAxes;
+    private lights;
+    constructor(schematicRenderer: SchematicRenderer);
+    get showGrid(): boolean;
+    set showGrid(value: boolean);
+    get showAxes(): boolean;
+    set showAxes(value: boolean);
+    updateHelpers(): void;
+    addCameraHelper(camera: THREE.Camera, name: string): void;
+    removeCameraHelper(name: string): void;
+    addTargetIndicator(position: THREE.Vector3, name?: string): void;
+    removeTargetIndicator(name?: string): void;
+    updateTargetIndicatorPosition(position: THREE.Vector3, name?: string): void;
+    addPathVisualization(group: THREE.Group, name: string): void;
+    removePathVisualization(name: string): void;
+    addLight(name: string, light: THREE.Light): void;
+    removeLight(name: string): void;
+    updateLight(name: string, properties: Partial<THREE.Light>): void;
+    getLights(): Map<string, THREE.Light>;
+    toggleGrid(show: boolean): void;
+    toggleAxes(show: boolean): void;
+    addDebugCuboide(position: THREE.Vector3, size: THREE.Vector3, color: number): void;
+    addDebugBoundingBox(position: THREE.Vector3, size: THREE.Vector3, color: number): void;
+    addDebugText(text: string, position: THREE.Vector3, color?: number, backgroundColor?: number): void;
+    removeObject(name: string): void;
+    getObjectByName(name: string): THREE.Object3D | undefined;
+    getAllObjects(): THREE.Object3D[];
+    add(object: THREE.Object3D, name?: string): void;
+    setBackgroundColor(color: THREE.Color | string | number): void;
+    setFog(fog: THREE.Fog | THREE.FogExp2): void;
+    setEnvironmentMap(envMap: THREE.Texture): void;
+    addSchematic(schematic: SchematicObject): void;
+    removeSchematic(schematic: SchematicObject): void;
+}
+//# sourceMappingURL=SceneManager.d.ts.map

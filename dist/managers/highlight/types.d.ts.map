@@ -1,0 +1,1 @@
+{"version":3,"file":"types.d.ts","sourceRoot":"","sources":["../../../src/managers/highlight/types.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,SAAS;IACzB,IAAI,EAAE,MAAM,CAAC;IACb,UAAU,EAAE,MAAM,CAAC,MAAM,EAAE,GAAG,CAAC,CAAC;IAChC,WAAW,EAAE,GAAG,CAAC;CACjB"}

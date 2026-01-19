@@ -1,0 +1,21 @@
+export { SchematicRenderer } from "./SchematicRenderer";
+export { SimulationManager } from "./managers/SimulationManager";
+export { SimulationLogger } from "./utils/SimulationLogger";
+export { CustomIoHighlight } from "./managers/highlight/CustomIoHighlight";
+export { InsignManager } from "./managers/InsignManager";
+export { InsignIoManager } from "./managers/InsignIoManager";
+export { OverlayManager } from "./managers/OverlayManager";
+export { InsignRegionHighlight } from "./managers/highlight/InsignRegionHighlight";
+export { InsignIoHoverHandler } from "./managers/highlight/InsignIoHoverHandler";
+export { KeyboardControls } from "./managers/KeyboardControls";
+export { InspectorManager } from "./managers/InspectorManager";
+export { ResourcePackManagerProxy } from "./managers/ResourcePackManagerProxy";
+export { ResourcePackUI } from "./ui/ResourcePackUI";
+export { ExportUI } from "./ui/ExportUI";
+export { RenderSettingsUI } from "./ui/RenderSettingsUI";
+export { CaptureUI } from "./ui/CaptureUI";
+export { BaseUI, UIColors, UIStyles } from "./ui/UIComponents";
+export { SchematicExporter } from "./export/SchematicExporter";
+export { InsignIoHighlight } from "./managers/highlight/InsignIoHighlight";
+// Re-export nucleation to provide single WASM instance across the app
+export * from "./nucleationExports";
