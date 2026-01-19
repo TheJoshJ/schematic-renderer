@@ -7,6 +7,8 @@ import { CameraManagerOptions } from "./managers/CameraManager";
 import { SelectableObject } from "./managers/SelectableObject";
 import { SchematicRenderer } from "./SchematicRenderer";
 import { ResourcePackOptions } from "./types/resourcePack";
+import { CaptureUIOptions } from "./ui/CaptureUI";
+import { RenderSettingsUIOptions } from "./ui/RenderSettingsUI";
 
 export interface ProgressBarOptions {
 	showLabel?: boolean;
@@ -274,6 +276,10 @@ export interface SchematicRendererOptions {
 	definitionRegionOptions?: DefinitionRegionOptions;
 	// Resource pack management options
 	resourcePackOptions?: ResourcePackOptions;
+	// Capture UI options (screenshot/recording panel, keyboard shortcut: C)
+	captureUIOptions?: CaptureUIOptions;
+	// Render settings UI options (render settings panel, keyboard shortcut: R)
+	renderSettingsUIOptions?: RenderSettingsUIOptions;
 	// Callbacks for lifecycle events
 	callbacks?: Callbacks;
 	// Additional options can be added here
@@ -382,6 +388,18 @@ export const DEFAULT_OPTIONS: SchematicRendererOptions = {
 		enableKeyboardShortcuts: true, // Enable keyboard shortcuts
 		toggleUIShortcut: "KeyP", // Press P to toggle UI
 		maxPacks: 0, // 0 = unlimited
+	},
+	captureUIOptions: {
+		enableUI: true, // Enable capture UI (screenshot/recording panel)
+		uiPosition: "top-right", // UI position
+		enableKeyboardShortcuts: true, // Enable keyboard shortcut to toggle UI
+		toggleUIShortcut: "KeyC", // Press C to toggle UI
+	},
+	renderSettingsUIOptions: {
+		enableUI: true, // Enable render settings UI panel
+		uiPosition: "top-right", // UI position
+		enableKeyboardShortcuts: true, // Enable keyboard shortcut to toggle UI
+		toggleUIShortcut: "KeyR", // Press R to toggle UI
 	},
 	resourcePackBlobs: [],
 };

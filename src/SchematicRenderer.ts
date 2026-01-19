@@ -166,10 +166,10 @@ export class SchematicRenderer {
 
 		// Initialize Render Settings UI
 		this.renderSettingsUI = new RenderSettingsUI(this, {
-			enableUI: true,
-			uiPosition: "top-right",
-			enableKeyboardShortcuts: true,
-			toggleUIShortcut: "KeyR",
+			enableUI: options.renderSettingsUIOptions?.enableUI ?? true,
+			uiPosition: options.renderSettingsUIOptions?.uiPosition ?? "top-right",
+			enableKeyboardShortcuts: options.renderSettingsUIOptions?.enableKeyboardShortcuts ?? true,
+			toggleUIShortcut: options.renderSettingsUIOptions?.toggleUIShortcut ?? "KeyR",
 			onSettingsChange: (settings) => {
 				this.options.callbacks?.onRenderSettingsChanged?.(settings);
 			},
@@ -177,10 +177,10 @@ export class SchematicRenderer {
 
 		// Initialize Capture UI
 		this.captureUI = new CaptureUI(this, {
-			enableUI: true,
-			uiPosition: "top-right",
-			enableKeyboardShortcuts: true,
-			toggleUIShortcut: "KeyC",
+			enableUI: options.captureUIOptions?.enableUI ?? true,
+			uiPosition: options.captureUIOptions?.uiPosition ?? "top-right",
+			enableKeyboardShortcuts: options.captureUIOptions?.enableKeyboardShortcuts ?? true,
+			toggleUIShortcut: options.captureUIOptions?.toggleUIShortcut ?? "KeyC",
 			onScreenshotTaken: (blob, filename) => {
 				this.options.callbacks?.onScreenshotTaken?.(blob, filename);
 			},
