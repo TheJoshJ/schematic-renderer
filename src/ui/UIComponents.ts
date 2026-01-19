@@ -2,11 +2,104 @@
 
 export type UIPosition = "top-left" | "top-right" | "bottom-left" | "bottom-right";
 
+/**
+ * Represents a keyboard shortcut with optional modifier keys.
+ * Can be specified as:
+ * - A simple string like "KeyC" or "KeyR" (just the key code)
+ * - An object with key and modifiers like { key: "KeyC", alt: true }
+ */
+export interface KeyboardShortcutConfig {
+	/** The key code (e.g., "KeyC", "KeyR", "Backquote", "Escape") */
+	key: string;
+	/** Require Alt key to be held */
+	alt?: boolean;
+	/** Require Ctrl key to be held */
+	ctrl?: boolean;
+	/** Require Shift key to be held */
+	shift?: boolean;
+	/** Require Meta/Cmd key to be held */
+	meta?: boolean;
+}
+
+/** A keyboard shortcut can be a simple key code string or a full config object */
+export type KeyboardShortcut = string | KeyboardShortcutConfig;
+
+/**
+ * Normalizes a keyboard shortcut to the full config format.
+ * @param shortcut - A string key code or KeyboardShortcutConfig
+ * @returns The normalized KeyboardShortcutConfig
+ */
+export function normalizeShortcut(shortcut: KeyboardShortcut): KeyboardShortcutConfig {
+	if (typeof shortcut === "string") {
+		return { key: shortcut };
+	}
+	return shortcut;
+}
+
+/**
+ * Checks if a keyboard event matches the given shortcut configuration.
+ * @param event - The keyboard event to check
+ * @param shortcut - The shortcut to match against
+ * @returns True if the event matches the shortcut
+ */
+export function matchesShortcut(event: KeyboardEvent, shortcut: KeyboardShortcut): boolean {
+	const config = normalizeShortcut(shortcut);
+
+	// Check the key code matches
+	if (event.code !== config.key) {
+		return false;
+	}
+
+	// Check modifier keys - if specified in config, must match event state
+	// If not specified in config (undefined/false), the modifier must NOT be pressed
+	const altRequired = config.alt ?? false;
+	const ctrlRequired = config.ctrl ?? false;
+	const shiftRequired = config.shift ?? false;
+	const metaRequired = config.meta ?? false;
+
+	if (event.altKey !== altRequired) return false;
+	if (event.ctrlKey !== ctrlRequired) return false;
+	if (event.shiftKey !== shiftRequired) return false;
+	if (event.metaKey !== metaRequired) return false;
+
+	return true;
+}
+
+/**
+ * Formats a keyboard shortcut for display (e.g., "Alt+C", "Ctrl+Shift+P")
+ * @param shortcut - The shortcut to format
+ * @returns A human-readable string representation
+ */
+export function formatShortcut(shortcut: KeyboardShortcut): string {
+	const config = normalizeShortcut(shortcut);
+	const parts: string[] = [];
+
+	if (config.ctrl) parts.push("Ctrl");
+	if (config.alt) parts.push("Alt");
+	if (config.shift) parts.push("Shift");
+	if (config.meta) parts.push("Cmd");
+
+	// Convert key code to readable format
+	let keyDisplay = config.key;
+	if (keyDisplay.startsWith("Key")) {
+		keyDisplay = keyDisplay.substring(3); // "KeyC" -> "C"
+	} else if (keyDisplay === "Backquote") {
+		keyDisplay = "`";
+	} else if (keyDisplay === "Space") {
+		keyDisplay = "Space";
+	} else if (keyDisplay.startsWith("Digit")) {
+		keyDisplay = keyDisplay.substring(5); // "Digit1" -> "1"
+	}
+
+	parts.push(keyDisplay);
+	return parts.join("+");
+}
+
 export interface BaseUIOptions {
 	enableUI?: boolean;
 	uiPosition?: UIPosition;
 	enableKeyboardShortcuts?: boolean;
-	toggleUIShortcut?: string;
+	toggleUIShortcut?: KeyboardShortcut;
 }
 
 /**
@@ -745,7 +838,8 @@ export abstract class BaseUI {
 				return;
 			}
 
-			if (e.code === this.options.toggleUIShortcut) {
+			if (this.options.toggleUIShortcut && matchesShortcut(e, this.options.toggleUIShortcut)) {
+				e.preventDefault();
 				this.toggle();
 			}
 		};

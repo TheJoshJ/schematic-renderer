@@ -1,11 +1,25 @@
 import { performanceMonitor } from "../performance/PerformanceMonitor";
+import { PerformanceDashboardOptions } from "../SchematicRendererOptions";
+import { KeyboardShortcut, matchesShortcut } from "./UIComponents";
 
 export class PerformanceDashboard {
 	private container: HTMLElement;
 	private isVisible: boolean = false;
 	private updateInterval: number | null = null;
+	private options: PerformanceDashboardOptions;
+	private toggleShortcut: KeyboardShortcut;
+	private keydownHandler: ((e: KeyboardEvent) => void) | null = null;
 
-	constructor() {
+	constructor(options: PerformanceDashboardOptions = {}) {
+		this.options = {
+			enabled: true,
+			enableKeyboardShortcuts: true,
+			...options,
+		};
+
+		// Default shortcut: Ctrl+P
+		this.toggleShortcut = options.toggleDashboardShortcut ?? { key: "KeyP", ctrl: true };
+
 		this.container = this.createDashboard();
 		this.setupEventListeners();
 	}
@@ -51,13 +65,26 @@ export class PerformanceDashboard {
 		const closeBtn = this.container.querySelector("#close-dashboard");
 		closeBtn?.addEventListener("click", () => this.hide());
 
-		// Toggle with Ctrl+P
-		document.addEventListener("keydown", (e) => {
-			if (e.ctrlKey && e.key === "p") {
-				e.preventDefault();
-				this.toggle();
-			}
-		});
+		// Setup keyboard shortcut if enabled
+		if (this.options.enableKeyboardShortcuts !== false) {
+			this.keydownHandler = (e: KeyboardEvent) => {
+				// Skip if focused on input elements
+				if (
+					document.activeElement?.tagName === "INPUT" ||
+					document.activeElement?.tagName === "TEXTAREA" ||
+					document.activeElement?.tagName === "SELECT"
+				) {
+					return;
+				}
+
+				if (matchesShortcut(e, this.toggleShortcut)) {
+					e.preventDefault();
+					this.toggle();
+				}
+			};
+
+			document.addEventListener("keydown", this.keydownHandler);
+		}
 	}
 
 	public show(): void {
@@ -217,7 +244,52 @@ export class PerformanceDashboard {
 			}
 		}, 5000);
 	}
+
+	/**
+	 * Reconfigure the dashboard with new options.
+	 * This updates the keyboard shortcut configuration.
+	 */
+	public configure(options: PerformanceDashboardOptions): void {
+		this.options = {
+			...this.options,
+			...options,
+		};
+
+		// Update shortcut if provided
+		if (options.toggleDashboardShortcut !== undefined) {
+			this.toggleShortcut = options.toggleDashboardShortcut;
+		}
+
+		// Re-setup keyboard shortcuts if enabled changed
+		if (options.enableKeyboardShortcuts !== undefined) {
+			// Remove existing handler
+			if (this.keydownHandler) {
+				document.removeEventListener("keydown", this.keydownHandler);
+				this.keydownHandler = null;
+			}
+
+			// Re-add if enabled
+			if (options.enableKeyboardShortcuts) {
+				this.keydownHandler = (e: KeyboardEvent) => {
+					if (
+						document.activeElement?.tagName === "INPUT" ||
+						document.activeElement?.tagName === "TEXTAREA" ||
+						document.activeElement?.tagName === "SELECT"
+					) {
+						return;
+					}
+
+					if (matchesShortcut(e, this.toggleShortcut)) {
+						e.preventDefault();
+						this.toggle();
+					}
+				};
+
+				document.addEventListener("keydown", this.keydownHandler);
+			}
+		}
+	}
 }
 
-// Global instance
+// Global instance (can be reconfigured via configure method)
 export const performanceDashboard = new PerformanceDashboard();

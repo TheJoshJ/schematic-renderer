@@ -2,10 +2,26 @@ import * as THREE from "three";
 import { SchematicRenderer } from "../SchematicRenderer";
 import { SelectableObject } from "./SelectableObject";
 import { SchematicObject } from "./SchematicObject";
+import { KeyboardShortcut, matchesShortcut } from "../ui/UIComponents";
+
+export interface GizmoShortcuts {
+	/** Shortcut for translate mode (default: KeyG) */
+	translate?: KeyboardShortcut;
+	/** Shortcut for rotate mode (default: KeyR) */
+	rotate?: KeyboardShortcut;
+	/** Shortcut for scale mode (default: KeyS) */
+	scale?: KeyboardShortcut;
+	/** Shortcut to deselect/cancel (default: Escape) */
+	deselect?: KeyboardShortcut;
+}
 
 export interface InteractionManagerOptions {
 	enableSelection?: boolean;
 	enableMovingSchematics?: boolean;
+	/** Enable keyboard shortcuts for gizmo mode switching */
+	enableKeyboardShortcuts?: boolean;
+	/** Custom shortcuts for gizmo modes */
+	gizmoShortcuts?: GizmoShortcuts;
 }
 
 export class InteractionManager {
@@ -17,10 +33,22 @@ export class InteractionManager {
 	private hoveredObject: SelectableObject | null = null;
 	private canvas: HTMLCanvasElement;
 	private selectedObject: SelectableObject | null = null;
+	private gizmoShortcuts: Required<GizmoShortcuts>;
 
 	constructor(schematicRenderer: SchematicRenderer, options: InteractionManagerOptions) {
 		this.schematicRenderer = schematicRenderer;
-		this.options = options;
+		this.options = {
+			...options,
+			enableKeyboardShortcuts: options.enableKeyboardShortcuts ?? true,
+		};
+
+		// Set default gizmo shortcuts
+		this.gizmoShortcuts = {
+			translate: options.gizmoShortcuts?.translate ?? "KeyG",
+			rotate: options.gizmoShortcuts?.rotate ?? "KeyR",
+			scale: options.gizmoShortcuts?.scale ?? "KeyS",
+			deselect: options.gizmoShortcuts?.deselect ?? "Escape",
+		};
 
 		this.raycaster = new THREE.Raycaster();
 		this.mouse = new THREE.Vector2();
@@ -70,20 +98,17 @@ export class InteractionManager {
 
 	private onKeyDown(event: KeyboardEvent) {
 		if (!this.options.enableMovingSchematics) return;
+		if (this.options.enableKeyboardShortcuts === false) return;
 
-		switch (event.key) {
-			case "g": // Press 'g' for translate mode
-				this.schematicRenderer.gizmoManager?.setMode("translate");
-				break;
-			case "r": // Press 'r' for rotate mode
-				this.schematicRenderer.gizmoManager?.setMode("rotate");
-				break;
-			case "s": // Press 's' for scale mode
-				this.schematicRenderer.gizmoManager?.setMode("scale");
-				break;
-			case "Escape": // Press 'Escape' to deselect object
-				this.deselectObject();
-				break;
+		// Check for gizmo mode shortcuts
+		if (matchesShortcut(event, this.gizmoShortcuts.translate)) {
+			this.schematicRenderer.gizmoManager?.setMode("translate");
+		} else if (matchesShortcut(event, this.gizmoShortcuts.rotate)) {
+			this.schematicRenderer.gizmoManager?.setMode("rotate");
+		} else if (matchesShortcut(event, this.gizmoShortcuts.scale)) {
+			this.schematicRenderer.gizmoManager?.setMode("scale");
+		} else if (matchesShortcut(event, this.gizmoShortcuts.deselect)) {
+			this.deselectObject();
 		}
 	}
 

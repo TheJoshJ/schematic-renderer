@@ -14,6 +14,7 @@
 import * as THREE from "three";
 import type { SchematicRenderer } from "../SchematicRenderer";
 import type { DebugOptions } from "../SchematicRendererOptions";
+import { KeyboardShortcut, matchesShortcut } from "../ui/UIComponents";
 
 // Dynamic import for debug GUI
 let GUI: any = null;
@@ -41,14 +42,20 @@ export class InspectorManager {
 	private isVisible: boolean = true;
 	private state: Record<string, any> = {};
 	private threeInspector: any = null; // Three.js Inspector (WebGPU only)
+	private toggleShortcut: KeyboardShortcut;
+	private keydownHandler: ((e: KeyboardEvent) => void) | null = null;
 
 	constructor(renderer: SchematicRenderer, options: DebugOptions = {}) {
 		this.renderer = renderer;
 		this.options = {
 			enableInspector: true,
 			showOnStartup: true,
+			enableKeyboardShortcuts: true,
 			...options,
 		};
+
+		// Set default shortcut (backtick/tilde key)
+		this.toggleShortcut = options.toggleInspectorShortcut ?? "Backquote";
 
 		if (this.options.enableInspector) {
 			this.initialize();
@@ -593,12 +600,25 @@ export class InspectorManager {
 	}
 
 	private setupKeyboardShortcut(): void {
-		document.addEventListener("keydown", (e) => {
-			// Toggle GUI with backtick/tilde key
-			if (e.key === "`" || e.key === "~") {
+		if (this.options.enableKeyboardShortcuts === false) return;
+
+		this.keydownHandler = (e: KeyboardEvent) => {
+			// Skip if focused on input elements
+			if (
+				document.activeElement?.tagName === "INPUT" ||
+				document.activeElement?.tagName === "TEXTAREA" ||
+				document.activeElement?.tagName === "SELECT"
+			) {
+				return;
+			}
+
+			if (matchesShortcut(e, this.toggleShortcut)) {
+				e.preventDefault();
 				this.toggle();
 			}
-		});
+		};
+
+		document.addEventListener("keydown", this.keydownHandler);
 	}
 
 	/**

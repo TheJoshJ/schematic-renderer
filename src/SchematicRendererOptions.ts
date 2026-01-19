@@ -7,6 +7,10 @@ import { CameraManagerOptions } from "./managers/CameraManager";
 import { SelectableObject } from "./managers/SelectableObject";
 import { SchematicRenderer } from "./SchematicRenderer";
 import { ResourcePackOptions } from "./types/resourcePack";
+import { ExportUIOptions } from "./types/export";
+import { CaptureUIOptions } from "./ui/CaptureUI";
+import { RenderSettingsUIOptions } from "./ui/RenderSettingsUI";
+import { KeyboardShortcut } from "./ui/UIComponents";
 
 export interface ProgressBarOptions {
 	showLabel?: boolean;
@@ -53,6 +57,10 @@ export interface DebugOptions {
 	enableInspector?: boolean;
 	// Show the GUI on startup (can be toggled with keyboard shortcut)
 	showOnStartup?: boolean;
+	// Enable keyboard shortcut to toggle inspector
+	enableKeyboardShortcuts?: boolean;
+	// Keyboard shortcut to toggle inspector (default: Backquote/tilde key)
+	toggleInspectorShortcut?: KeyboardShortcut;
 	// Custom panels to add to the GUI
 	customPanels?: Array<{
 		name: string;
@@ -67,6 +75,15 @@ export interface DebugOptions {
 			onChange?: (value: any) => void;
 		}>;
 	}>;
+}
+
+export interface PerformanceDashboardOptions {
+	// Enable the performance dashboard
+	enabled?: boolean;
+	// Enable keyboard shortcut to toggle dashboard
+	enableKeyboardShortcuts?: boolean;
+	// Keyboard shortcut to toggle dashboard (default: Ctrl+P)
+	toggleDashboardShortcut?: KeyboardShortcut;
 }
 
 export interface PostProcessingOptions {
@@ -274,6 +291,14 @@ export interface SchematicRendererOptions {
 	definitionRegionOptions?: DefinitionRegionOptions;
 	// Resource pack management options
 	resourcePackOptions?: ResourcePackOptions;
+	// Export UI options (export panel, keyboard shortcut: E)
+	exportUIOptions?: ExportUIOptions;
+	// Capture UI options (screenshot/recording panel, keyboard shortcut: C)
+	captureUIOptions?: CaptureUIOptions;
+	// Render settings UI options (render settings panel, keyboard shortcut: R)
+	renderSettingsUIOptions?: RenderSettingsUIOptions;
+	// Performance dashboard options
+	performanceDashboardOptions?: PerformanceDashboardOptions;
 	// Callbacks for lifecycle events
 	callbacks?: Callbacks;
 	// Additional options can be added here
@@ -347,6 +372,8 @@ export const DEFAULT_OPTIONS: SchematicRendererOptions = {
 	debugOptions: {
 		enableInspector: false,
 		showOnStartup: true,
+		enableKeyboardShortcuts: true,
+		toggleInspectorShortcut: "Backquote", // Backtick/tilde key
 	},
 	postProcessingOptions: {
 		enabled: true,
@@ -382,6 +409,29 @@ export const DEFAULT_OPTIONS: SchematicRendererOptions = {
 		enableKeyboardShortcuts: true, // Enable keyboard shortcuts
 		toggleUIShortcut: "KeyP", // Press P to toggle UI
 		maxPacks: 0, // 0 = unlimited
+	},
+	exportUIOptions: {
+		enableUI: true, // Enable export UI panel
+		uiPosition: "top-right", // UI position
+		enableKeyboardShortcuts: true, // Enable keyboard shortcut to toggle UI
+		toggleUIShortcut: "KeyE", // Press E to toggle UI
+	},
+	captureUIOptions: {
+		enableUI: true, // Enable capture UI (screenshot/recording panel)
+		uiPosition: "top-right", // UI position
+		enableKeyboardShortcuts: true, // Enable keyboard shortcut to toggle UI
+		toggleUIShortcut: "KeyC", // Press C to toggle UI
+	},
+	renderSettingsUIOptions: {
+		enableUI: true, // Enable render settings UI panel
+		uiPosition: "top-right", // UI position
+		enableKeyboardShortcuts: true, // Enable keyboard shortcut to toggle UI
+		toggleUIShortcut: "KeyR", // Press R to toggle UI
+	},
+	performanceDashboardOptions: {
+		enabled: true, // Enable performance dashboard
+		enableKeyboardShortcuts: true, // Enable keyboard shortcut to toggle dashboard
+		toggleDashboardShortcut: { key: "KeyP", ctrl: true }, // Ctrl+P to toggle dashboard
 	},
 	resourcePackBlobs: [],
 };

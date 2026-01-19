@@ -1,6 +1,7 @@
 // Export Types - Type definitions for schematic export functionality
 
 import * as THREE from "three";
+import { KeyboardShortcut } from "../ui/UIComponents";
 
 /**
  * Supported export formats
@@ -161,8 +162,8 @@ export interface ExportUIOptions {
 	uiPosition?: "top-left" | "top-right" | "bottom-left" | "bottom-right";
 	/** Enable keyboard shortcuts */
 	enableKeyboardShortcuts?: boolean;
-	/** Toggle UI shortcut key code */
-	toggleUIShortcut?: string;
+	/** Toggle UI shortcut (key code or object with modifiers, e.g., "KeyE" or { key: "KeyE", alt: true }) */
+	toggleUIShortcut?: KeyboardShortcut;
 	/** Default export options */
 	defaultOptions?: Partial<ExportOptions>;
 	/** Available formats (subset of all formats) */
