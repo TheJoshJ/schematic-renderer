@@ -2,6 +2,7 @@
 
 import { ResourcePackManager } from "../managers/ResourcePackManager";
 import { ResourcePackInfo, ResourcePackOptions } from "../types/resourcePack";
+import { matchesShortcut } from "./UIComponents";
 
 /**
  * Resource Pack Management UI Component
@@ -193,7 +194,8 @@ export class ResourcePackUI {
 				return;
 			}
 
-			if (e.code === this.options.toggleUIShortcut) {
+			if (this.options.toggleUIShortcut && matchesShortcut(e, this.options.toggleUIShortcut)) {
+				e.preventDefault();
 				this.toggle();
 			}
 		});

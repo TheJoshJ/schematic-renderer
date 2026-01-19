@@ -157,12 +157,17 @@ export class SchematicRenderer {
 			this.canvas,
 			() => this.schematicManager?.getFirstSchematic() || null,
 			{
-				enableUI: true,
-				uiPosition: "top-right",
-				enableKeyboardShortcuts: true,
-				toggleUIShortcut: "KeyE",
+				enableUI: options.exportUIOptions?.enableUI ?? true,
+				uiPosition: options.exportUIOptions?.uiPosition ?? "top-right",
+				enableKeyboardShortcuts: options.exportUIOptions?.enableKeyboardShortcuts ?? true,
+				toggleUIShortcut: options.exportUIOptions?.toggleUIShortcut ?? "KeyE",
 			}
 		);
+
+		// Configure performance dashboard with options
+		if (options.performanceDashboardOptions) {
+			performanceDashboard.configure(options.performanceDashboardOptions);
+		}
 
 		// Initialize Render Settings UI
 		this.renderSettingsUI = new RenderSettingsUI(this, {

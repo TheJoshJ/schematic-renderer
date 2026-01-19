@@ -11,6 +11,7 @@ import {
 	ExportResult,
 	NormalMode,
 } from "../types/export";
+import { matchesShortcut } from "./UIComponents";
 
 /**
  * Export UI Component
@@ -604,7 +605,8 @@ export class ExportUI {
 				return;
 			}
 
-			if (e.code === this.options.toggleUIShortcut) {
+			if (matchesShortcut(e, this.options.toggleUIShortcut)) {
+				e.preventDefault();
 				this.toggle();
 			}
 		});

@@ -1,5 +1,7 @@
 // Resource Pack Types
 
+import { KeyboardShortcut } from "../ui/UIComponents";
+
 /**
  * Information about a loaded resource pack
  */
@@ -220,8 +222,8 @@ export interface ResourcePackOptions {
 	enableDragReorder?: boolean;
 	/** Enable keyboard shortcuts (default: true) */
 	enableKeyboardShortcuts?: boolean;
-	/** Keyboard shortcut to toggle UI visibility */
-	toggleUIShortcut?: string;
+	/** Keyboard shortcut to toggle UI visibility (key code or object with modifiers) */
+	toggleUIShortcut?: KeyboardShortcut;
 	/** Maximum packs allowed (0 = unlimited) */
 	maxPacks?: number;
 	/** Default packs to load on init */
