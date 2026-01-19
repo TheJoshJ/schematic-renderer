@@ -238,6 +238,39 @@ const options = {
 const renderer = new SchematicRenderer.SchematicRenderer(canvas, {}, {}, options);
 ```
 
+## Keyboard Shortcuts
+
+Default shortcuts: `C` (Capture), `R` (Render Settings), `P` (Resource Packs), `E` (Export), `` ` `` (Inspector), `Ctrl+P` (Performance), `G/R/S` (Gizmo modes), `Escape` (Deselect).
+
+All shortcuts are configurable and support modifier keys:
+
+```javascript
+const renderer = new SchematicRenderer.SchematicRenderer(
+	canvas,
+	{},
+	{},
+	{
+		// Simple rebinding: use key codes like "KeyX", "Escape", "Backquote"
+		captureUIOptions: { toggleUIShortcut: "KeyX" },
+
+		// With modifiers: { key, alt?, ctrl?, shift?, meta? }
+		renderSettingsUIOptions: { toggleUIShortcut: { key: "KeyR", alt: true } },
+
+		// Disable shortcuts
+		exportUIOptions: { enableKeyboardShortcuts: false },
+
+		// Gizmo shortcuts
+		interactionOptions: {
+			gizmoShortcuts: {
+				translate: { key: "KeyG", alt: true },
+				rotate: { key: "KeyR", alt: true },
+				scale: { key: "KeyS", alt: true },
+			},
+		},
+	}
+);
+```
+
 ## Callbacks
 
 The renderer provides extensive callbacks for hooking into lifecycle events, user interactions, and loading states.
